@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:images/controller/home_page_controller.dart';
+import 'package:images/view/detail_view.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class HomeView extends StatelessWidget {
@@ -66,36 +67,53 @@ class HomeView extends StatelessWidget {
                                   childrenDelegate: SliverChildBuilderDelegate(
                                     childCount: controller.photos.length,
                                     (context, index) {
-                                      return Container(
-                                        child: CachedNetworkImage(
-                                          imageUrl: controller
-                                              .photos[index].urls!['small'],
-                                          imageBuilder:
-                                              (context, imageProvider) {
-                                            return Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                image: DecorationImage(
-                                                  image: imageProvider,
-                                                  fit: BoxFit.cover,
+                                      return GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (ctx) =>
+                                                  DetailView(index: index),
+                                            ),
+                                          );
+                                        },
+                                        child: Hero(
+                                          tag: controller.photos[index].id!,
+                                          child: Container(
+                                            child: CachedNetworkImage(
+                                              imageUrl: controller
+                                                  .photos[index].urls!['small'],
+                                              imageBuilder:
+                                                  (context, imageProvider) {
+                                                return Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              placeholder: (context, url) =>
+                                                  Center(
+                                                child: LoadingAnimationWidget
+                                                    .flickr(
+                                                  rightDotColor: Colors.black,
+                                                  leftDotColor:
+                                                      const Color(0xfffd0079),
+                                                  size: 25,
                                                 ),
                                               ),
-                                            );
-                                          },
-                                          placeholder: (context, url) => Center(
-                                            child:
-                                                LoadingAnimationWidget.flickr(
-                                              rightDotColor: Colors.black,
-                                              leftDotColor:
-                                                  const Color(0xfffd0079),
-                                              size: 25,
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      const Icon(
+                                                Icons
+                                                    .image_not_supported_outlined,
+                                                color: Colors.grey,
+                                              ),
                                             ),
-                                          ),
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(
-                                            Icons.image_not_supported_outlined,
-                                            color: Colors.grey,
                                           ),
                                         ),
                                       );
